@@ -14,10 +14,11 @@ public class MonsterCtrl : MonoBehaviour
         IDLE,
         ATTACK,
         SLAM,
-        DAMAGE,
         DIE,
     }
 
+    [SerializeField]
+    private Transform firePos;
     // 몬스터의 현재 상태
     public State state = State.IDLE;
     // 원거리 공격 사정거리
@@ -42,6 +43,8 @@ public class MonsterCtrl : MonoBehaviour
 
     [SerializeField]
     private GameObject thorn;
+    [SerializeField]
+    private HealthBarUI healthBarUI;
 
     // 몬스터의 생명 초기값
     private readonly int iniHp = 100;
@@ -49,6 +52,7 @@ public class MonsterCtrl : MonoBehaviour
 
     private void Awake()
     {
+        Debug.Log("zz");
         currHp = iniHp;
         monsterTransform = GetComponent<Transform>();
         targetTransform = GameObject.FindWithTag("PLAYER").GetComponent<Transform>();
@@ -70,6 +74,11 @@ public class MonsterCtrl : MonoBehaviour
 
         //상태에 따라 몬스터 행동 수행 코루틴
         StartCoroutine(MonsterAction());
+    }
+
+    private void Update()
+    {
+        transform.LookAt(targetTransform);
     }
 
     private IEnumerator CheckMonsterState()
@@ -120,9 +129,6 @@ public class MonsterCtrl : MonoBehaviour
                     anim.SetBool(hashAttack, false);
                     anim.SetBool(hashShoot, true);
                     break;
-                case State.DAMAGE:
-                    anim.SetTrigger(hashHit);
-                    break;
                 case State.DIE:
                     isDie = true;
                     anim.SetTrigger(hashDie);
@@ -136,9 +142,31 @@ public class MonsterCtrl : MonoBehaviour
     private void ShootThorn()
     {
         Debug.Log("Shoot");
-        Instantiate(thorn, transform);
+
+        Vector3 moveDir = (targetTransform.position - firePos.position).normalized;
+
+        Quaternion quaternion = Quaternion.LookRotation(moveDir,Vector3.up);
+
+
+        Instantiate(thorn, firePos.transform.position, Quaternion.Euler(0f, quaternion.eulerAngles.y, 0f));
     }
-    
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if(collision.collider.CompareTag("BULLET"))
+        {
+            Destroy(collision.gameObject);
+            anim.SetTrigger(hashHit);
+            currHp -= 10;
+            healthBarUI.ChangeHP(currHp, iniHp);
+
+            if(currHp <= 0)
+            {
+                state = State.DIE;
+            }
+        }
+    }
+
     private void OnDrawGizmos()
     {
         // 추적 사정거리
