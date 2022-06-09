@@ -16,6 +16,7 @@ public class InputManager : MonoBehaviour
     private void Update()
     {
         MoveInput();
+        Reload();
     }
 
     /// <summary>
@@ -38,5 +39,13 @@ public class InputManager : MonoBehaviour
         moveParam.intParam = (int)moveAmount;
 
         EventManager.TriggerEvent("PLAYER_MOVEMENT", moveParam);
+    }
+
+    private void Reload()
+    {
+        if(Input.GetKeyDown(KeyCode.R))
+        {
+            EventManager.TriggerEvent("BULLET_RELOAD", new EventParam());
+        }
     }
 }

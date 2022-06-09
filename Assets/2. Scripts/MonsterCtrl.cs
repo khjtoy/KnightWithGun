@@ -38,6 +38,7 @@ public class MonsterCtrl : MonoBehaviour
     private readonly int hashAttack = Animator.StringToHash("IsAttack");
     private readonly int hashShoot = Animator.StringToHash("IsShoot");
     private readonly int hashHit = Animator.StringToHash("Hit");
+    private readonly int hashBDie = Animator.StringToHash("IsDie");
     private readonly int hashDie = Animator.StringToHash("Die");
     // 혈흔 효과 프리팹
     private GameObject bloodEffect;
@@ -46,10 +47,14 @@ public class MonsterCtrl : MonoBehaviour
     private GameObject thorn;
     [SerializeField]
     private HealthBarUI healthBarUI;
+    [SerializeField]
+    private OpaqueItem opaqueItem;
 
     // 몬스터의 생명 초기값
     private readonly int iniHp = 100;
     private int currHp;
+
+    private Rigidbody rigidbody;
 
     private void Awake()
     {
@@ -59,6 +64,7 @@ public class MonsterCtrl : MonoBehaviour
         targetTransform = GameObject.FindWithTag("PLAYER").GetComponent<Transform>();
 
         anim = GetComponent<Animator>();
+        rigidbody = GetComponent<Rigidbody>();
     }
 
     private void Start()
@@ -99,7 +105,12 @@ public class MonsterCtrl : MonoBehaviour
             // 몬스터의 캐릭터 사이의 거리 측정
             float distance = Vector3.Distance(monsterTransform.position, targetTransform.position);
 
-             if (distance <= attackDist)
+
+            if(opaqueItem.isOpaque)
+            {
+                state = State.IDLE;
+            }
+            else if (distance <= attackDist)
             {
                 state = State.SLAM;
             }
@@ -133,9 +144,11 @@ public class MonsterCtrl : MonoBehaviour
                     break;
                 case State.DIE:
                     isDie = true;
+                    //GetComponent<CapsuleCollider>().enabled = false;
                     healthBarUI.gameObject.SetActive(false);
+                    anim.SetBool(hashBDie,isDie);
                     anim.SetTrigger(hashDie);
-                    GetComponent<CapsuleCollider>().enabled = false;
+                    rigidbody.isKinematic = false;
                     break;
             }
             yield return new WaitForSeconds(0.3f);
@@ -160,7 +173,7 @@ public class MonsterCtrl : MonoBehaviour
     {
         if(collision.collider.CompareTag("BULLET"))
         {
-            Destroy(collision.gameObject);
+            ObjectPoolMgr.Instance.Despawn(collision.gameObject);
             anim.SetTrigger(hashHit);
             currHp -= 10;
             healthBarUI.ChangeHP(currHp, iniHp);
