@@ -24,5 +24,11 @@ public class MoveThorn : MonoBehaviour
     private void Update()
     {
         transform.Translate(Vector3.forward * moveSpeed);
+        Invoke("Despawn", 3f);
+    }
+
+    private void Despawn()
+    {
+        ObjectPoolMgr.Instance.Despawn(gameObject);
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static DefineCS;
 using UnityEngine.AI;
 using UnityEngine.UI;
 
@@ -78,7 +79,8 @@ public class MonsterCtrl : MonoBehaviour
 
     private void Update()
     {
-        transform.LookAt(targetTransform);
+        if(state != State.DIE)
+            transform.LookAt(targetTransform);
     }
 
     private IEnumerator CheckMonsterState()
@@ -131,6 +133,7 @@ public class MonsterCtrl : MonoBehaviour
                     break;
                 case State.DIE:
                     isDie = true;
+                    healthBarUI.gameObject.SetActive(false);
                     anim.SetTrigger(hashDie);
                     GetComponent<CapsuleCollider>().enabled = false;
                     break;
@@ -147,8 +150,10 @@ public class MonsterCtrl : MonoBehaviour
 
         Quaternion quaternion = Quaternion.LookRotation(moveDir,Vector3.up);
 
-
-        Instantiate(thorn, firePos.transform.position, Quaternion.Euler(0f, quaternion.eulerAngles.y, 0f));
+        GameObject thorn = ObjectPoolMgr.Instance.GetPooledObject((int)PooledIndex.THORNS);
+        thorn.transform.position = firePos.transform.position;
+        thorn.transform.rotation = Quaternion.Euler(0f, quaternion.eulerAngles.y, 0f);
+        thorn.SetActive(true);
     }
 
     private void OnCollisionEnter(Collision collision)

@@ -79288,6 +79288,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3453813974826768511, guid: cf9586332770702409abb5ec68c9b2e7, type: 3}
+      propertyPath: m_RootOrder
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 5839550566591769925, guid: cf9586332770702409abb5ec68c9b2e7, type: 3}
       propertyPath: m_Name
       value: CactusBossy
@@ -80867,6 +80871,9 @@ MonoBehaviour:
   itemsToPool:
   - objectToPool: {fileID: 4244434315293865993, guid: 40adc96828526934e8694848c7c96b22, type: 3}
     amountToPool: 100
+    shouldExpand: 0
+  - objectToPool: {fileID: 7738592639162897167, guid: eeb1399e4f073294d965e65eba37ff07, type: 3}
+    amountToPool: 500
     shouldExpand: 0
   pooledObjects: []
 --- !u!4 &1828436782
