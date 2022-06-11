@@ -14,6 +14,8 @@ public class ZoomAim : Character
 	private bool aim;
 	Transform cameraObject;
 
+	RayCastWeapon weapon;
+
 	void Start()
 	{
 		aimBool = Animator.StringToHash("Aim");
@@ -22,6 +24,8 @@ public class ZoomAim : Character
 
 		Cursor.visible = false;
 		Cursor.lockState = CursorLockMode.Locked;
+		weapon = GetComponentInChildren<RayCastWeapon>();
+
 	}
 
 	void Update()
@@ -46,6 +50,15 @@ public class ZoomAim : Character
 			aimCamOffset.x = aimCamOffset.x * (-1);
 			aimPivotOffset.x = aimPivotOffset.x * (-1);
 		}
+
+		if(Input.GetMouseButtonDown(0))
+        {
+			weapon.StartFiring();
+        }
+		if(Input.GetMouseButtonUp(0))
+        {
+			weapon.StopFiring();
+        }
 
 		ani.SetBool(aimBool, aim);
 	}

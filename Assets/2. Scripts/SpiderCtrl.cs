@@ -18,7 +18,7 @@ public class SpiderCtrl : MonoBehaviour
     // 몬스터의 현재 상태
     public State state = State.IDLE;
     // 추적 사정거리
-    public float traceDist = 10.0f;
+    //public float traceDist = 10.0f;
     // 공격 사정거리
     public float attackDist = 2.0f;
     // 몬스터 사망 여부
@@ -47,7 +47,14 @@ public class SpiderCtrl : MonoBehaviour
     private int waypointIndex;
     private Vector3 target;
 
-    // Score 연결
+    // 시야각
+    [SerializeField]
+    private float viewAngle;
+    [SerializeField]
+    private float viewDistance;
+    Vector3 targetDir = Vector3.zero;
+    float dotProduct;
+    float theta;
     private void Awake()
     {
         Debug.Log("^^");
@@ -83,6 +90,21 @@ public class SpiderCtrl : MonoBehaviour
         StartCoroutine(MonsterAction());
     }
 
+    private void Start()
+    {
+        // Patrol 랜덤 위치 변환
+        for(int i = 0; i < 100; i++)
+        {
+            int num1 = Random.Range(0, waypoints.Length);
+            int num2 = Random.Range(0, waypoints.Length);
+
+            Transform temp = waypoints[num1];
+            waypoints[num1] = waypoints[num2];
+            waypoints[num2] = temp;
+
+        }
+    }
+
     private void Update()
     {
         
@@ -99,11 +121,28 @@ public class SpiderCtrl : MonoBehaviour
             monsterTransform.rotation = Quaternion.Slerp(monsterTransform.rotation, rotation, Time.deltaTime * 10.0f);
         }
         
+        // Patrol 지정
         if(Vector3.Distance(monsterTransform.position, target) < 1)
         {
             IterateWaypointIndex();
             target = waypoints[waypointIndex].position;
         }
+
+        // 시야각
+        Vector3 leftBoundary = DirFromAngle(-viewAngle / 2);
+        Vector3 rightBoundary = DirFromAngle(viewAngle / 2);
+        Debug.DrawLine(transform.position, transform.position + leftBoundary * viewDistance, Color.blue);
+        Debug.DrawLine(transform.position, transform.position + rightBoundary * viewDistance, Color.blue);
+
+        targetDir = (targetTransform.position - monsterTransform.position).normalized;
+        dotProduct = Vector3.Dot(transform.forward.normalized, targetDir);
+        theta = Mathf.Acos(dotProduct) * Mathf.Rad2Deg;
+    }
+
+    public Vector3 DirFromAngle(float angleInDegrees)
+    {
+        angleInDegrees += monsterTransform.eulerAngles.y;
+        return new Vector3(Mathf.Sin(angleInDegrees * Mathf.Deg2Rad), 0, Mathf.Cos(angleInDegrees * Mathf.Deg2Rad));
     }
     private IEnumerator CheckMonsterState()
     {
@@ -124,10 +163,16 @@ public class SpiderCtrl : MonoBehaviour
             {
                 state = State.ATTACK;
             }
+            else if(theta <= viewAngle / 2)
+            {
+                state = State.TRACE;
+            }
+            /*
             else if (distance <= traceDist)
             {
                 state = State.TRACE;
             }
+            */
             else
             {
                 //state = State.IDLE;
@@ -242,13 +287,14 @@ public class SpiderCtrl : MonoBehaviour
 
     private void OnDrawGizmos()
     {
+        /*
         // 추적 사정거리
         if (state == State.TRACE)
         {
             Gizmos.color = Color.blue;
             Gizmos.DrawWireSphere(monsterTransform.position, traceDist);
         }
-
+        */
         // 공격 사정거리
         if (state == State.ATTACK)
         {
