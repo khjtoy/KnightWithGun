@@ -6,7 +6,7 @@ using static DefineCS;
 using UnityEngine.AI;
 using UnityEngine.UI;
 
-public class MonsterCtrl : MonoBehaviour
+public class MonsterCtrl : Monster
 {
     //몬스터 상태정보
 
@@ -171,6 +171,7 @@ public class MonsterCtrl : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+        /*
         if(collision.collider.CompareTag("BULLET"))
         {
             ObjectPoolMgr.Instance.Despawn(collision.gameObject);
@@ -183,6 +184,7 @@ public class MonsterCtrl : MonoBehaviour
                 state = State.DIE;
             }
         }
+        */
     }
 
     private void OnDrawGizmos()
@@ -203,5 +205,16 @@ public class MonsterCtrl : MonoBehaviour
         }
         
     }
-    
+
+    public override void MonsterHit()
+    {
+        anim.SetTrigger(hashHit);
+        currHp -= 10;
+        healthBarUI.ChangeHP(currHp, iniHp);
+
+        if (currHp <= 0)
+        {
+            state = State.DIE;
+        }
+    }
 }

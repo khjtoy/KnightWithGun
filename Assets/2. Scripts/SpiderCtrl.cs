@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class SpiderCtrl : MonoBehaviour
+public class SpiderCtrl : Monster
 {
 
     public enum State
@@ -52,9 +52,13 @@ public class SpiderCtrl : MonoBehaviour
     private float viewAngle;
     [SerializeField]
     private float viewDistance;
+    [SerializeField]
+    private HealthBarUI healthBarUI;
     Vector3 targetDir = Vector3.zero;
     float dotProduct;
     float theta;
+
+    private Rigidbody rigidbody;
     private void Awake()
     {
         Debug.Log("^^");
@@ -67,6 +71,7 @@ public class SpiderCtrl : MonoBehaviour
         agent.updateRotation = false;
 
         anim = GetComponent<Animator>();
+        rigidbody = GetComponent<Rigidbody>();
     }
 
     private void OnEnable()
@@ -109,7 +114,7 @@ public class SpiderCtrl : MonoBehaviour
     {
         
         // 목적지까지 남은 거리로 회전 여부 판단
-        if (agent.remainingDistance >= 2.0f)
+        if (agent.remainingDistance >= 7.2f)
         {
             // 에이전트의 회전 값
             Vector3 direction = agent.desiredVelocity;
@@ -220,12 +225,9 @@ public class SpiderCtrl : MonoBehaviour
 
                     //StopAllCoroutines();
 
-                    GetComponent<CapsuleCollider>().enabled = false;
-                    SphereCollider[] spheres = GetComponentsInChildren<SphereCollider>();
-                    foreach (SphereCollider sphere in spheres)
-                    {
-                        sphere.enabled = false;
-                    }
+                    //GetComponent<CapsuleCollider>().enabled = false;
+                    healthBarUI.gameObject.SetActive(false);
+                    rigidbody.isKinematic = false;
                     break;
             }
             yield return new WaitForSeconds(0.3f);
@@ -300,6 +302,26 @@ public class SpiderCtrl : MonoBehaviour
         {
             Gizmos.color = Color.red;
             Gizmos.DrawWireSphere(monsterTransform.position, attackDist);
+        }
+    }
+
+    public override void MonsterHit()
+    {
+        if(currHp > 0)
+        {
+            // 피격 애니메이션 실행
+            anim.SetTrigger(hashHit);
+
+            // 몬스터 HP 차감
+            currHp -= 10;
+            healthBarUI.ChangeHP(currHp, iniHp);
+            if (currHp <= 0)
+            {
+                anim.SetBool(hashTrace, false);
+                anim.SetBool(hashAttack, false);
+                anim.SetBool(hashPatrol, false);
+                state = State.DIE;
+            }
         }
     }
 }
