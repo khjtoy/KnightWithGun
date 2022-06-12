@@ -44,7 +44,7 @@ public class SpiderCtrl : Monster
     // 순찰
     [SerializeField]
     private Transform[] waypoints;
-    private int waypointIndex;
+    public int waypointIndex;
     private Vector3 target;
 
     // 시야각
@@ -98,6 +98,7 @@ public class SpiderCtrl : Monster
     private void Start()
     {
         // Patrol 랜덤 위치 변환
+        
         for(int i = 0; i < 100; i++)
         {
             int num1 = Random.Range(0, waypoints.Length);
@@ -108,13 +109,14 @@ public class SpiderCtrl : Monster
             waypoints[num2] = temp;
 
         }
+        
     }
 
     private void Update()
     {
         
         // 목적지까지 남은 거리로 회전 여부 판단
-        if (agent.remainingDistance >= 7.2f)
+        if (agent.remainingDistance >= 6f)
         {
             // 에이전트의 회전 값
             Vector3 direction = agent.desiredVelocity;
@@ -127,8 +129,9 @@ public class SpiderCtrl : Monster
         }
         
         // Patrol 지정
-        if(Vector3.Distance(monsterTransform.position, target) < 1)
+        if(Vector3.Distance(monsterTransform.position, target) < 7f && state == State.PATROL)
         {
+            Debug.Log("지정");
             IterateWaypointIndex();
             target = waypoints[waypointIndex].position;
         }

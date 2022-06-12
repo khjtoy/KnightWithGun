@@ -42,7 +42,7 @@ public class ZoomAim : Character
 		}
 
 		// 스프린트 하지 못하게 막기
-		canSprint = !aim;
+		//canSprint = !aim;
 
 		// 카메라 조준 위치를 왼쪽 또는 오른쪽으로 전환
 		if (aim && Input.GetMouseButtonDown(2))
@@ -51,17 +51,24 @@ public class ZoomAim : Character
 			aimPivotOffset.x = aimPivotOffset.x * (-1);
 		}
 
-		if(Input.GetMouseButtonDown(0))
-        {
-			weapon.StartFiring();
-        }
-		if(Input.GetMouseButtonUp(0))
-        {
-			weapon.StopFiring();
-        }
-
+		if (aim)
+		{
+			if (Input.GetMouseButtonDown(0))
+			{
+				weapon.StartFiring();
+			}
+			if (Input.GetMouseButtonUp(0))
+			{
+				weapon.StopFiring();
+			}
+		}
 		ani.SetBool(aimBool, aim);
 	}
+
+	public bool isAim()
+    {
+		return aim;
+    }
 
 	// 조준 모드를 지연을 통한 처리
 	private IEnumerator ToggleAimOn()
@@ -75,6 +82,7 @@ public class ZoomAim : Character
 		//else
 		//{
 		aim = true;
+		//weapon.gameObject.SetActive(true);
 		int signal = 1;
 		aimCamOffset.x = Mathf.Abs(aimCamOffset.x) * signal;
 		aimPivotOffset.x = Mathf.Abs(aimPivotOffset.x) * signal;
@@ -90,7 +98,8 @@ public class ZoomAim : Character
 	private IEnumerator ToggleAimOff()
 	{
 		aim = false;
-		yield return new WaitForSeconds(0.3f);
+		yield return new WaitForSeconds(0.05f);
+		//weapon.gameObject.SetActive(false);
 		cameraObject.GetComponent<CameraFollow>().ResetTargetOffsets();
 		cameraObject.GetComponent<CameraFollow>().ResetMaxVerticalAngle();
 		yield return new WaitForSeconds(0.05f);

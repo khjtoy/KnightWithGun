@@ -34,8 +34,8 @@ public class MoveThorn : MonoBehaviour
         if(collision.collider.CompareTag("PLAYER"))
         {
             EventManager.TriggerEvent("PLAYER_DAMAGE", damageParam);
-            Despawn();
         }
+        Despawn();
     }
 
     private void Despawn()

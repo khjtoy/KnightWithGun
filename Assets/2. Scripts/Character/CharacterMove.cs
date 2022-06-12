@@ -64,7 +64,7 @@ public class CharacterMove : Character
 
         if (moveDirection.sqrMagnitude > 0)
         {
-            if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift) && canSprint)
+            if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift) && !GetComponent<ZoomAim>().isAim())
             {
                 moveDirection *= sprintSpeed;
                 ani.SetFloat("Speed", sprintSpeed);
