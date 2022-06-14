@@ -31,6 +31,8 @@ public class MoveThorn : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+
+        Debug.Log("µé¾î¿È");
         if(collision.collider.CompareTag("PLAYER"))
         {
             EventManager.TriggerEvent("PLAYER_DAMAGE", damageParam);

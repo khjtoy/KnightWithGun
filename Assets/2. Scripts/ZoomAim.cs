@@ -9,8 +9,9 @@ public class ZoomAim : Character
 	public Vector3 aimPivotOffset = new Vector3(0.5f, 1.2f, 0f);         // 조준 시 카메라 Pivot 설정
 	public Vector3 aimCamOffset = new Vector3(0f, 0.4f, -0.7f);         // 조준 시 카메라의 Offset 설정
 
-	private int aimBool;
-	private int hashSpeed;
+	private readonly int aimBool = Animator.StringToHash("Aim");
+	private readonly int hashSpeed = Animator.StringToHash("Speed");
+	private readonly int hashPeach = Animator.StringToHash("Peach");
 	private bool aim;
 	Transform cameraObject;
 
@@ -18,18 +19,18 @@ public class ZoomAim : Character
 
 	void Start()
 	{
-		aimBool = Animator.StringToHash("Aim");
-		hashSpeed = Animator.StringToHash("Speed");
 		cameraObject = Camera.main.transform;
 
 		Cursor.visible = false;
 		Cursor.lockState = CursorLockMode.Locked;
 		weapon = GetComponentInChildren<RayCastWeapon>();
+		weapon.gameObject.SetActive(false);
 
 	}
 
 	void Update()
 	{
+		ani.SetFloat(hashPeach,(cameraObject.GetComponent<CameraFollow>().GetPitch()) / 50.0f);
 		// 마우스 우클릭을 눌렸는가
 		if (Input.GetMouseButton(1) && !aim)
 		{
@@ -82,7 +83,7 @@ public class ZoomAim : Character
 		//else
 		//{
 		aim = true;
-		//weapon.gameObject.SetActive(true);
+		weapon.gameObject.SetActive(true);
 		int signal = 1;
 		aimCamOffset.x = Mathf.Abs(aimCamOffset.x) * signal;
 		aimPivotOffset.x = Mathf.Abs(aimPivotOffset.x) * signal;
@@ -99,7 +100,7 @@ public class ZoomAim : Character
 	{
 		aim = false;
 		yield return new WaitForSeconds(0.05f);
-		//weapon.gameObject.SetActive(false);
+		weapon.gameObject.SetActive(false);
 		cameraObject.GetComponent<CameraFollow>().ResetTargetOffsets();
 		cameraObject.GetComponent<CameraFollow>().ResetMaxVerticalAngle();
 		yield return new WaitForSeconds(0.05f);

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8099158166944510682}
   - component: {fileID: 4931366064799875896}
   - component: {fileID: 8838424926794104147}
-  - component: {fileID: 2885515028159888863}
+  - component: {fileID: 7037364629291310473}
   m_Layer: 0
   m_Name: thorns
   m_TagString: THORN
@@ -222,8 +222,8 @@ TrailRenderer:
   m_MinVertexDistance: 0.1
   m_Autodestruct: 0
   m_Emitting: 1
---- !u!64 &2885515028159888863
-MeshCollider:
+--- !u!65 &7037364629291310473
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -232,7 +232,6 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -5491780849873737984, guid: a36a1798489455346b80655310d29fa6, type: 3}
+  serializedVersion: 2
+  m_Size: {x: 0.22054479, y: 0.22054479, z: 0.30457115}
+  m_Center: {x: 0, y: 0, z: 0.15228558}

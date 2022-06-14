@@ -120,6 +120,11 @@ public class CameraFollow : MonoBehaviour
 		this.targetFOV = defaultFOV;
 	}
 
+	public float GetPitch()
+    {
+		return angleV;
+    }
+
 	public void SetMaxVerticalAngle(float angle)
 	{
 		this.targetMaxVerticalAngle = angle;
