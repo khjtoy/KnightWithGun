@@ -14,6 +14,7 @@ public class WeaponGrenade : MonoBehaviour, Item
 
     private PlayerWeapon playerWeapon;
 
+
     private void Start()
     {
         playerWeapon = transform.parent.GetComponent<PlayerWeapon>();

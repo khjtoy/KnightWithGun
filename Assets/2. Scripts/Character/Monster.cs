@@ -4,5 +4,5 @@ using UnityEngine;
 
 public abstract class Monster : MonoBehaviour
 {
-    public abstract void MonsterHit();
+    public abstract void MonsterHit(Vector3 bloodPos, Vector3 bloodRot);
 }

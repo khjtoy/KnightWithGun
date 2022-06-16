@@ -55,6 +55,7 @@ public class MonsterCtrl : Monster
     private int currHp;
 
     private Rigidbody rigidbody;
+    SphereCollider[] spheres;
 
     private void Awake()
     {
@@ -75,6 +76,11 @@ public class MonsterCtrl : Monster
         isDie = false;
 
         GetComponent<CapsuleCollider>().enabled = true;
+        spheres = GetComponentsInChildren<SphereCollider>();
+        foreach (SphereCollider sphere in spheres)
+        {
+            sphere.enabled = false;
+        }
 
         //몬스터의 상태를 체크하는 코루틴
         StartCoroutine(CheckMonsterState());
@@ -85,7 +91,7 @@ public class MonsterCtrl : Monster
 
     private void Update()
     {
-        if(state != State.DIE)
+        if(state != State.DIE && !opaqueItem.isOpaque)
             transform.LookAt(targetTransform);
     }
 
@@ -131,18 +137,34 @@ public class MonsterCtrl : Monster
             switch (state)
             {
                 case State.IDLE:
+                    foreach (SphereCollider sphere in spheres)
+                    {
+                        sphere.enabled = false;
+                    }
                     anim.SetBool(hashAttack, false);
                     anim.SetBool(hashShoot, false);
                     break;
                 case State.SLAM:
+                    foreach (SphereCollider sphere in spheres)
+                    {
+                        sphere.enabled = true;
+                    }
                     anim.SetBool(hashAttack, true);
                     anim.SetBool(hashShoot, false);
                     break;
                 case State.ATTACK:
+                    foreach (SphereCollider sphere in spheres)
+                    {
+                        sphere.enabled = false;
+                    }
                     anim.SetBool(hashAttack, false);
                     anim.SetBool(hashShoot, true);
                     break;
                 case State.DIE:
+                    foreach (SphereCollider sphere in spheres)
+                    {
+                        sphere.enabled = false;
+                    }
                     isDie = true;
                     //GetComponent<CapsuleCollider>().enabled = false;
                     healthBarUI.gameObject.SetActive(false);
@@ -206,7 +228,7 @@ public class MonsterCtrl : Monster
         
     }
 
-    public override void MonsterHit()
+    public override void MonsterHit(Vector3 bloodPos, Vector3 bloodRot)
     {
         anim.SetTrigger(hashHit);
         currHp -= 10;

@@ -59,6 +59,16 @@ public class SpiderCtrl : Monster
     float theta;
 
     private Rigidbody rigidbody;
+
+    [SerializeField]
+    private OpaqueItem opaqueItem;
+
+
+    [SerializeField]
+    private CapsuleCollider damageCol;
+
+    // 혈흔 효과 프리팹
+    private GameObject bloodEffect;
     private void Awake()
     {
         Debug.Log("^^");
@@ -72,6 +82,16 @@ public class SpiderCtrl : Monster
 
         anim = GetComponent<Animator>();
         rigidbody = GetComponent<Rigidbody>();
+
+        // BloodESprayEffect 프리팹 로드
+        bloodEffect = Resources.Load<GameObject>("BloodSprayFX");
+    }
+
+    private void ShowBloodEffect(Vector3 pos, Quaternion rot)
+    {
+        // 혈흔 효과 생성
+        GameObject blood = Instantiate<GameObject>(bloodEffect, pos, rot, monsterTransform);
+        Destroy(blood, 1.0f);
     }
 
     private void OnEnable()
@@ -82,11 +102,6 @@ public class SpiderCtrl : Monster
         isDie = false;
 
         GetComponent<CapsuleCollider>().enabled = true;
-        SphereCollider[] spheres = GetComponentsInChildren<SphereCollider>();
-        foreach (SphereCollider sphere in spheres)
-        {
-            sphere.enabled = true;
-        }
 
         //몬스터의 상태를 체크하는 코루틴
         StartCoroutine(CheckMonsterState());
@@ -97,6 +112,18 @@ public class SpiderCtrl : Monster
 
     private void Start()
     {
+        // wayPoint 지정
+        GameObject wayPoint = GameObject.FindGameObjectWithTag("PATROL");
+
+        waypoints = new Transform[17];
+        for(int i = 0; i <= 16; i++)
+        {
+            waypoints[i] = wayPoint.transform.GetChild(i);
+        }
+
+        // Item 지정
+        opaqueItem = GameObject.FindGameObjectWithTag("ITEM").GetComponent<OpaqueItem>();
+
         // Patrol 랜덤 위치 변환
         
         for(int i = 0; i < 100; i++)
@@ -109,7 +136,7 @@ public class SpiderCtrl : Monster
             waypoints[num2] = temp;
 
         }
-        
+
     }
 
     private void Update()
@@ -167,7 +194,11 @@ public class SpiderCtrl : Monster
             // 몬스터의 캐릭터 사이의 거리 측정
             float distance = Vector3.Distance(monsterTransform.position, targetTransform.position);
 
-            if (distance <= attackDist)
+            if(opaqueItem.isOpaque)
+            {
+                state = State.PATROL;
+            }
+            else if (distance <= attackDist)
             {
                 state = State.ATTACK;
             }
@@ -196,11 +227,13 @@ public class SpiderCtrl : Monster
             {
                 case State.IDLE:
                     // 추적 중지
+                    damageCol.enabled = false;
                     agent.isStopped = true;
                     anim.SetBool(hashTrace, false);
                     anim.SetBool(hashPatrol, false);
                     break;
                 case State.PATROL:
+                    damageCol.enabled = false;
                     agent.SetDestination(target);
                     agent.speed = 7f;
                     agent.isStopped = false;
@@ -210,6 +243,7 @@ public class SpiderCtrl : Monster
                     break;
                 case State.TRACE:
                     // 추적 대상 좌표로 이동
+                    damageCol.enabled = false;
                     agent.SetDestination(targetTransform.position);
                     agent.speed = 10f;
                     agent.isStopped = false;
@@ -218,17 +252,18 @@ public class SpiderCtrl : Monster
                     anim.SetBool(hashPatrol, false);
                     break;
                 case State.ATTACK:
+                    damageCol.enabled = true;
                     anim.SetBool(hashAttack, true);
                     break;
                 case State.DIE:
                     isDie = true;
                     agent.isStopped = true;
-
                     anim.SetTrigger(hashDie);
 
                     //StopAllCoroutines();
 
                     //GetComponent<CapsuleCollider>().enabled = false;
+                    damageCol.enabled = false;
                     healthBarUI.gameObject.SetActive(false);
                     rigidbody.isKinematic = false;
                     break;
@@ -308,7 +343,7 @@ public class SpiderCtrl : Monster
         }
     }
 
-    public override void MonsterHit()
+    public override void MonsterHit(Vector3 bloodPos, Vector3 bloodRot)
     {
         if(currHp > 0)
         {
@@ -318,8 +353,14 @@ public class SpiderCtrl : Monster
             // 몬스터 HP 차감
             currHp -= 10;
             healthBarUI.ChangeHP(currHp, iniHp);
+
+            // 총알의 충졸 지점의 법선 벡터
+            Quaternion rot = Quaternion.LookRotation(bloodRot);
+            // 혈흔 효과 생상
+            ShowBloodEffect(bloodPos, rot);
             if (currHp <= 0)
             {
+                anim.SetBool("IsDie", true);
                 anim.SetBool(hashTrace, false);
                 anim.SetBool(hashAttack, false);
                 anim.SetBool(hashPatrol, false);

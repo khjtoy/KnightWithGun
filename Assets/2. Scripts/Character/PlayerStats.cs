@@ -23,11 +23,13 @@ public class PlayerStats : Character
     [SerializeField]
     private float flashSpeed = 5f;
     private bool ChangeClear = false;
-
+    EventParam damageParam;
     private void Start()
     {
         EventManager.StartListening("PLAYER_DAMAGE", Damage);
+        damageParam.intParam = 5;    
     }
+
 
     private void Update()
     {
@@ -58,6 +60,14 @@ public class PlayerStats : Character
         damageText.text = string.Format("{0}",currentHP);
         damageImage.color = flashColor;
         ChangeClear = true;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.CompareTag("ATTACK"))
+        {
+            Damage(damageParam);
+        }
     }
 
     private void OnDestroy()

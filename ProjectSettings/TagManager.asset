@@ -9,6 +9,9 @@ TagManager:
   - BULLET
   - THORN
   - RANGE
+  - ATTACK
+  - ITEM
+  - PATROL
   layers:
   - Default
   - TransparentFX

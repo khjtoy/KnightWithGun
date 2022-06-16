@@ -116,12 +116,18 @@ public class BossCtrl : MonoBehaviour
         {
 
             // 목적지까지 남은 거리로 회전 여부 판단
-            if (agent.remainingDistance >= 6.0f)
+            if (agent.remainingDistance >= 0.5f)
             {
-                Vector3 l_vector = targetTransform.position - monsterTransform.position;
+                // Vector3 l_vector = targetTransform.position - monsterTransform.position;
 
                 // 회전 각도 산출
-                Quaternion rotation = Quaternion.LookRotation(-l_vector);
+                //Quaternion rotation = Quaternion.LookRotation(-l_vector);
+
+                // 에이전트의 회전 값
+                Vector3 direction = agent.desiredVelocity;
+
+                // 회전 각도 산출
+                Quaternion rotation = Quaternion.LookRotation(-direction);
 
                 // 구면 선형보간 함수로 부드러운 회전 처리
                 monsterTransform.rotation = Quaternion.Slerp(monsterTransform.rotation, rotation, Time.deltaTime * 10.0f);
@@ -203,7 +209,6 @@ public class BossCtrl : MonoBehaviour
                         
                         monsterTransform.DORotate(targetTransform.rotation.eulerAngles, 2f).OnComplete(() =>
                         {
-                            Debug.Log("이새끼뭐야?");
                             isRot = false;
                             slashParticle.gameObject.SetActive(true);
                             anim.ResetTrigger(hashLAttack);
