@@ -18,7 +18,7 @@ public class SpiderCtrl : Monster
     // 몬스터의 현재 상태
     public State state = State.IDLE;
     // 추적 사정거리
-    //public float traceDist = 10.0f;
+    public float traceDist = 10.0f;
     // 공격 사정거리
     public float attackDist = 2.0f;
     // 몬스터 사망 여부
@@ -137,6 +137,8 @@ public class SpiderCtrl : Monster
 
         }
 
+        //랜덤 위치로 생성
+        transform.position = waypoints[0].position;
     }
 
     private void Update()
@@ -202,7 +204,7 @@ public class SpiderCtrl : Monster
             {
                 state = State.ATTACK;
             }
-            else if(theta <= viewAngle / 2)
+            else if(theta <= viewAngle / 2 && distance <= traceDist)
             {
                 state = State.TRACE;
             }
@@ -327,14 +329,14 @@ public class SpiderCtrl : Monster
 
     private void OnDrawGizmos()
     {
-        /*
+        
         // 추적 사정거리
         if (state == State.TRACE)
         {
             Gizmos.color = Color.blue;
             Gizmos.DrawWireSphere(monsterTransform.position, traceDist);
         }
-        */
+        
         // 공격 사정거리
         if (state == State.ATTACK)
         {

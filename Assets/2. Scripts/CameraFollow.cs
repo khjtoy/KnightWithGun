@@ -27,6 +27,7 @@ public class CameraFollow : MonoBehaviour
 
 	// 카메라 수평 각도 프로퍼티
 	public float GetH { get { return angleH; } }
+	public LayerMask layer;
 
 	void Awake()
 	{
@@ -159,7 +160,7 @@ public class CameraFollow : MonoBehaviour
 		// Cast origin and direction.
 		Vector3 origin = player.position + pivotOffset;
 		Vector3 direction = checkPos - origin;
-		if (Physics.SphereCast(origin, 0.2f, direction, out RaycastHit hit, direction.magnitude))
+		if (Physics.SphereCast(origin, 0.2f, direction, out RaycastHit hit, direction.magnitude, layer))
 		{
 			if (hit.transform != player && hit.transform != transform && !hit.transform.GetComponent<Collider>().isTrigger)
 			{

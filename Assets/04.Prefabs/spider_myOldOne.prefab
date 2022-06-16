@@ -1610,12 +1610,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   state: 0
+  traceDist: 40
   attackDist: 5
   isDie: 0
   waypoints: []
   waypointIndex: 0
-  viewAngle: 135
-  viewDistance: 10
+  viewAngle: 60
+  viewDistance: 0.5
   healthBarUI: {fileID: 217475200285261400}
   opaqueItem: {fileID: 0}
   damageCol: {fileID: 217475200076010418}

@@ -7,6 +7,7 @@ public static class DefineCS
     public enum PooledIndex
     {
         BULLET,
-        THORNS
+        THORNS,
+        SPIDER
     }
 }

@@ -31,7 +31,7 @@ public class MoveThorn : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-
+        //moveSpeed = 0;
         Debug.Log("µé¾î¿È");
         if(collision.collider.CompareTag("PLAYER"))
         {
