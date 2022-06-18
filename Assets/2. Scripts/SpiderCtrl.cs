@@ -282,6 +282,16 @@ public class SpiderCtrl : Monster
             waypointIndex = 0;
         }
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("GUN"))
+        {
+            MonsterHit(monsterTransform.position, monsterTransform.rotation.eulerAngles, 7);
+        }
+    }
+
+
     /*
     private void OnCollisionEnter(Collision collision)
     {
@@ -345,7 +355,7 @@ public class SpiderCtrl : Monster
         }
     }
 
-    public override void MonsterHit(Vector3 bloodPos, Vector3 bloodRot)
+    public override void MonsterHit(Vector3 bloodPos, Vector3 bloodRot, int damage)
     {
         if(currHp > 0)
         {
@@ -353,7 +363,7 @@ public class SpiderCtrl : Monster
             anim.SetTrigger(hashHit);
 
             // 몬스터 HP 차감
-            currHp -= 10;
+            currHp -= damage;
             healthBarUI.ChangeHP(currHp, iniHp);
 
             // 총알의 충졸 지점의 법선 벡터

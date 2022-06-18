@@ -1510,7 +1510,7 @@ GameObject:
   - component: {fileID: 217475199264811760}
   - component: {fileID: 217475199264811762}
   - component: {fileID: 217475199371125650}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: spider_myOldOne
   m_TagString: Untagged
   m_Icon: {fileID: 0}

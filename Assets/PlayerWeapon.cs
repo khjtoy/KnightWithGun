@@ -15,9 +15,16 @@ public class PlayerWeapon : MonoBehaviour
 
     public int weaponIndex { get; private set; }
 
+    private PlayerAttack playerAttack;
+
+    private void Start()
+    {
+        playerAttack = GetComponent<PlayerAttack>();
+    }
+
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (Input.GetKeyDown(KeyCode.Q) && !playerAttack.IsAttack)
             ChangePanel();
     }
 

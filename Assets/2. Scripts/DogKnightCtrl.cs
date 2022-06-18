@@ -46,6 +46,9 @@ public class DogKnightCtrl : MonoBehaviour
     [SerializeField]
     private Transform returnPos;
 
+    [SerializeField]
+    private GameObject meleeEffect;
+
     EventParam eventParam;
 
     private bool isComback = false;
@@ -91,7 +94,7 @@ public class DogKnightCtrl : MonoBehaviour
     private void Update()
     {
         // 목적지까지 남은 거리로 회전 여부 판단
-        if (agent.remainingDistance >= 2.0f)
+        if (agent.remainingDistance >= 7.0f)
         {
             // 에이전트의 회전 값
             Vector3 direction = agent.desiredVelocity;
@@ -167,6 +170,10 @@ public class DogKnightCtrl : MonoBehaviour
                         });
                     break;
                 case State.ATTACK:
+                    if(meleeEffect != null)
+                    {
+                        meleeEffect.SetActive(true);
+                    }
                     anim.SetBool(hashAttack, true);
                     break;
                 case State.DIE:
@@ -190,6 +197,10 @@ public class DogKnightCtrl : MonoBehaviour
         }
     }
 
+    public void OffParticle()
+    {
+        meleeEffect.SetActive(false);
+    }
     private void ChangeComback(EventParam eventParam)
     {
         Debug.Log("제발");

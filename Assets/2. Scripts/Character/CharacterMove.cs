@@ -31,15 +31,21 @@ public class CharacterMove : Character
     // private readonly int hashRunF = Animator.StringToHash("RunF");
     //private readonly int hashRunB = Animator.StringToHash("RunB");
 
+    private PlayerAttack playerAttack;
+
     private void Start()
     {
         EventManager.StartListening("PLAYER_MOVEMENT", SetMovement);
         cameraObject = Camera.main.transform;
+        playerAttack = GetComponent<PlayerAttack>();
     }
 
     private void Update()
     {
-        Movement();
+        if (!playerAttack.IsAttack)
+            Movement();
+        else
+            rigid.velocity = Vector3.zero;
     }
 
     Vector3 normalVector;

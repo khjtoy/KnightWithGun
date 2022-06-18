@@ -24,6 +24,8 @@ public class CameraFollow : MonoBehaviour
 	private float targetFOV;                                           // 타켓 카메라의 시야
 	private float targetMaxVerticalAngle;                              // 사용자 지정 최대 수직 카메라 각도
 	private bool isCustomOffset;                                       // 사용자 지정 카메라 오프셋 사용 여부
+	[SerializeField]
+	private Transform cameraRot; // 카메라 회전을 할 Transform;
 
 	// 카메라 수평 각도 프로퍼티
 	public float GetH { get { return angleH; } }
@@ -34,7 +36,7 @@ public class CameraFollow : MonoBehaviour
 		cam = transform;
 
 		cam.position = player.position + Quaternion.identity * pivotOffset + Quaternion.identity * camOffset;
-		cam.rotation = Quaternion.identity;
+		cameraRot.rotation = Quaternion.identity;
 
 		smoothPivotOffset = pivotOffset;
 		smoothCamOffset = camOffset;
@@ -59,7 +61,7 @@ public class CameraFollow : MonoBehaviour
 
 		Quaternion camYRotation = Quaternion.Euler(0, angleH, 0);
 		Quaternion aimRotation = Quaternion.Euler(-angleV, angleH, 0);
-		cam.rotation = aimRotation;
+		cameraRot.rotation = aimRotation;
 
 		cam.GetComponent<Camera>().fieldOfView = Mathf.Lerp(cam.GetComponent<Camera>().fieldOfView, targetFOV, Time.deltaTime);
 

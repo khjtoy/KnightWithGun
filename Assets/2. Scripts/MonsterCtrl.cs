@@ -191,6 +191,14 @@ public class MonsterCtrl : Monster
         thorn.SetActive(true);
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("GUN"))
+        {
+            MonsterHit(monsterTransform.position, monsterTransform.rotation.eulerAngles, 7);
+        }
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
         /*
@@ -228,10 +236,10 @@ public class MonsterCtrl : Monster
         
     }
 
-    public override void MonsterHit(Vector3 bloodPos, Vector3 bloodRot)
+    public override void MonsterHit(Vector3 bloodPos, Vector3 bloodRot, int damage)
     {
         anim.SetTrigger(hashHit);
-        currHp -= 10;
+        currHp -= damage;
         healthBarUI.ChangeHP(currHp, iniHp);
 
         if (currHp <= 0)

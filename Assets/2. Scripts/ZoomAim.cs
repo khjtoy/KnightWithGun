@@ -17,6 +17,8 @@ public class ZoomAim : Character
 
 	RayCastWeapon weapon;
 
+	private PlayerAttack playerAttack;
+
 	void Start()
 	{
 		cameraObject = Camera.main.transform;
@@ -24,7 +26,8 @@ public class ZoomAim : Character
 		Cursor.visible = false;
 		Cursor.lockState = CursorLockMode.Locked;
 		weapon = GetComponentInChildren<RayCastWeapon>();
-		weapon.gameObject.SetActive(false);
+		playerAttack = GetComponent<PlayerAttack>();
+		//weapon.gameObject.SetActive(false);
 
 	}
 
@@ -32,7 +35,7 @@ public class ZoomAim : Character
 	{
 		ani.SetFloat(hashPeach,(cameraObject.GetComponent<CameraFollow>().GetPitch()) / 50.0f);
 		// 마우스 우클릭을 눌렸는가
-		if (Input.GetMouseButton(1) && !aim)
+		if (Input.GetMouseButton(1) && !aim && !playerAttack.IsAttack)
 		{
 			StartCoroutine(ToggleAimOn());
 		}
@@ -83,7 +86,7 @@ public class ZoomAim : Character
 		//else
 		//{
 		aim = true;
-		weapon.gameObject.SetActive(true);
+		//weapon.gameObject.SetActive(true);
 		int signal = 1;
 		aimCamOffset.x = Mathf.Abs(aimCamOffset.x) * signal;
 		aimPivotOffset.x = Mathf.Abs(aimPivotOffset.x) * signal;
@@ -100,7 +103,7 @@ public class ZoomAim : Character
 	{
 		aim = false;
 		yield return new WaitForSeconds(0.05f);
-		weapon.gameObject.SetActive(false);
+		//weapon.gameObject.SetActive(false);
 		cameraObject.GetComponent<CameraFollow>().ResetTargetOffsets();
 		cameraObject.GetComponent<CameraFollow>().ResetMaxVerticalAngle();
 		yield return new WaitForSeconds(0.05f);

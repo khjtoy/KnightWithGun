@@ -12,6 +12,7 @@ TagManager:
   - ATTACK
   - ITEM
   - PATROL
+  - GUN
   layers:
   - Default
   - TransparentFX
@@ -26,8 +27,8 @@ TagManager:
   - Postprocessing
   - Player
   - Grenade
-  - 
-  - 
+  - Enemy
+  - EnemyBullet
   - 
   - 
   - 

@@ -130,7 +130,7 @@ public class BossCtrl : MonoBehaviour
                 Quaternion rotation = Quaternion.LookRotation(-direction);
 
                 // 구면 선형보간 함수로 부드러운 회전 처리
-                monsterTransform.rotation = Quaternion.Slerp(monsterTransform.rotation, rotation, Time.deltaTime * 10.0f);
+                //monsterTransform.rotation = Quaternion.Slerp(monsterTransform.rotation, rotation, Time.deltaTime * 10.0f);
             }
         }
     }

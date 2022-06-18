@@ -24,6 +24,10 @@ public class RayCastWeapon : MonoBehaviour
 
     [SerializeField]
     private OpaqueItem opaqueItem;
+
+    [SerializeField]
+    private Recoil recoil;
+
     public void StartFiring()
     {
         isFiring = true;
@@ -46,6 +50,7 @@ public class RayCastWeapon : MonoBehaviour
         Debug.Log("zz");
         var tracer = Instantiate(tracerEffect, ray.origin, Quaternion.identity);
         tracer.AddPosition(ray.origin);
+        recoil.RecoilFire();
 
         if (Physics.Raycast(ray, out hitInfo))
         {
@@ -53,7 +58,7 @@ public class RayCastWeapon : MonoBehaviour
             if(monster != null)
             {
                 Debug.Log("Á¢±Ù");
-                monster.MonsterHit(hitInfo.point, hitInfo.normal);
+                monster.MonsterHit(hitInfo.point, hitInfo.normal, 10);
             }
             Debug.DrawLine(ray.origin, hitInfo.point, Color.red, 1.0f);
 
@@ -64,6 +69,7 @@ public class RayCastWeapon : MonoBehaviour
 
             tracer.transform.position = hitInfo.point;
         }
+
     }
 
     public void StopFiring()

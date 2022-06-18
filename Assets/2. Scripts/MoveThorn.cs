@@ -10,7 +10,7 @@ public class MoveThorn : MonoBehaviour
     [SerializeField]
     private float moveSpeed;
     private EventParam damageParam;
-    private void Start()
+    private void OnEnable()
     {
         //player = GameObject.FindWithTag("PLAYER");
 
@@ -21,24 +21,27 @@ public class MoveThorn : MonoBehaviour
 
         //transform.rotation = Quaternion.LookRotation(moveDir);
         damageParam.intParam = 5;
+
+        Invoke("Despawn", 3f);
     }
 
     private void Update()
     {
-        transform.Translate(Vector3.forward * moveSpeed);
-        Invoke("Despawn", 3f);
+        transform.Translate(Vector3.forward * moveSpeed * Time.deltaTime);
+        
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider other)
     {
         //moveSpeed = 0;
         Debug.Log("µé¾î¿È");
-        if(collision.collider.CompareTag("PLAYER"))
+        if(other.CompareTag("PLAYER"))
         {
             EventManager.TriggerEvent("PLAYER_DAMAGE", damageParam);
         }
         Despawn();
     }
+
 
     private void Despawn()
     {
