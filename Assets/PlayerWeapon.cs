@@ -17,6 +17,11 @@ public class PlayerWeapon : MonoBehaviour
 
     private PlayerAttack playerAttack;
 
+    [SerializeField]
+    private GameObject gun;
+
+    private EventParam eventParam;
+
     private void Start()
     {
         playerAttack = GetComponent<PlayerAttack>();
@@ -33,8 +38,18 @@ public class PlayerWeapon : MonoBehaviour
         rect.DOKill();
         weaponIndex++;
         if (weaponIndex >= 2) weaponIndex = 0;
+
+        if (weaponIndex == 0) gun.SetActive(true);
+        else gun.SetActive(false);
+
         rect.anchoredPosition = new Vector3(265, 31, 0);
         rect.transform.GetChild(0).GetComponent<Image>().sprite = weaponImage[weaponIndex];
         rect.DOAnchorPosX(3, 1f);
+    }
+
+
+    public void MaxBullet()
+    {
+        EventManager.TriggerEvent("MAX", eventParam);
     }
 }

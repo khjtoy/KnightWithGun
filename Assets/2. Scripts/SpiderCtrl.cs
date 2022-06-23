@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 using UnityEngine.AI;
 
 public class SpiderCtrl : Monster
@@ -67,6 +68,9 @@ public class SpiderCtrl : Monster
     [SerializeField]
     private CapsuleCollider damageCol;
 
+    [SerializeField]
+    private GameObject floatingTextPrefab;
+
     // Ç÷Èç È¿°ú ÇÁ¸®ÆÕ
     private GameObject bloodEffect;
     private void Awake()
@@ -112,14 +116,6 @@ public class SpiderCtrl : Monster
 
     private void Start()
     {
-        // wayPoint ÁöÁ¤
-        GameObject wayPoint = GameObject.FindGameObjectWithTag("PATROL");
-
-        waypoints = new Transform[17];
-        for(int i = 0; i <= 16; i++)
-        {
-            waypoints[i] = wayPoint.transform.GetChild(i);
-        }
 
         // Item ÁöÁ¤
         opaqueItem = GameObject.FindGameObjectWithTag("ITEM").GetComponent<OpaqueItem>();
@@ -138,7 +134,6 @@ public class SpiderCtrl : Monster
         }
 
         //·£´ý À§Ä¡·Î »ý¼º
-        transform.position = waypoints[0].position;
     }
 
     private void Update()
@@ -274,6 +269,21 @@ public class SpiderCtrl : Monster
         }
     }
 
+    public void RandomPos()
+    {
+        // wayPoint ÁöÁ¤
+        GameObject wayPoint = GameObject.FindGameObjectWithTag("PATROL");
+
+        waypoints = new Transform[17];
+        for (int i = 0; i <= 16; i++)
+        {
+            waypoints[i] = wayPoint.transform.GetChild(i);
+        }
+
+        int range = Random.Range(0, waypoints.Length);
+        transform.position = waypoints[range].position;
+    }
+
     void IterateWaypointIndex()
     {
         waypointIndex++;
@@ -287,7 +297,7 @@ public class SpiderCtrl : Monster
     {
         if (other.CompareTag("GUN"))
         {
-            MonsterHit(monsterTransform.position, monsterTransform.rotation.eulerAngles, 7);
+            MonsterHit(monsterTransform.position, monsterTransform.rotation.eulerAngles, 10);
         }
     }
 
@@ -370,6 +380,12 @@ public class SpiderCtrl : Monster
             Quaternion rot = Quaternion.LookRotation(bloodRot);
             // Ç÷Èç È¿°ú »ý»ó
             ShowBloodEffect(bloodPos, rot);
+
+            if(floatingTextPrefab)
+            {
+                ShowFloatingText();
+            }
+
             if (currHp <= 0)
             {
                 anim.SetBool("IsDie", true);
@@ -379,5 +395,11 @@ public class SpiderCtrl : Monster
                 state = State.DIE;
             }
         }
+    }
+
+    private void ShowFloatingText()
+    {
+        var go = Instantiate(floatingTextPrefab, transform.position, Quaternion.identity, transform);
+        go.GetComponent<TextMeshPro>().text = currHp.ToString();
     }
 }

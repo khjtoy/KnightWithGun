@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour
         for(int i = 0; i < 50; i++)
         {
             GameObject spider = ObjectPoolMgr.Instance.GetPooledObject((int)PooledIndex.SPIDER);
+            spider.GetComponent<SpiderCtrl>().RandomPos();
             spider.SetActive(true);
         }
     }

@@ -17,7 +17,11 @@ public class ZoomAim : Character
 
 	RayCastWeapon weapon;
 
+	PlayerWeapon playerWeapon;
+
 	private PlayerAttack playerAttack;
+
+	private float time = 0.1f;
 
 	void Start()
 	{
@@ -27,6 +31,7 @@ public class ZoomAim : Character
 		Cursor.lockState = CursorLockMode.Locked;
 		weapon = GetComponentInChildren<RayCastWeapon>();
 		playerAttack = GetComponent<PlayerAttack>();
+		playerWeapon = GetComponent<PlayerWeapon>();
 		//weapon.gameObject.SetActive(false);
 
 	}
@@ -35,7 +40,7 @@ public class ZoomAim : Character
 	{
 		ani.SetFloat(hashPeach,(cameraObject.GetComponent<CameraFollow>().GetPitch()) / 50.0f);
 		// 마우스 우클릭을 눌렸는가
-		if (Input.GetMouseButton(1) && !aim && !playerAttack.IsAttack)
+		if (Input.GetMouseButton(1) && !aim && !playerAttack.IsAttack && playerWeapon.weaponIndex == 0)
 		{
 			StartCoroutine(ToggleAimOn());
 		}
@@ -57,13 +62,17 @@ public class ZoomAim : Character
 
 		if (aim)
 		{
-			if (Input.GetMouseButtonDown(0))
+			time -= Time.deltaTime;
+			if (Input.GetMouseButton(0) && time <= 0f)
 			{
 				weapon.StartFiring();
-			}
+				time = 0.1f;
+			}			
+
 			if (Input.GetMouseButtonUp(0))
 			{
 				weapon.StopFiring();
+				time = 0.1f;
 			}
 		}
 		ani.SetBool(aimBool, aim);
@@ -103,14 +112,12 @@ public class ZoomAim : Character
 	{
 		aim = false;
 		yield return new WaitForSeconds(0.05f);
-		//weapon.gameObject.SetActive(false);
 		cameraObject.GetComponent<CameraFollow>().ResetTargetOffsets();
 		cameraObject.GetComponent<CameraFollow>().ResetMaxVerticalAngle();
 		yield return new WaitForSeconds(0.05f);
-		//behaviourManager.RevokeOverridingBehaviour(this);
 	}
 
-	// LocalFixedUpdate overrides the virtual function of the base class.
+	
 	public void FixedUpdate()
 	{
 		// 카메라 위치와 방향을 조준 모드로 설정
@@ -131,20 +138,18 @@ public class ZoomAim : Character
 		Rotating();
 	}
 
-	// Rotate the player to match correct orientation, according to camera.
 	void Rotating()
 	{
 		Vector3 forward = cameraObject.TransformDirection(Vector3.forward);
-		// Player is moving on ground, Y component of camera facing is not relevant.
 		forward.y = 0.0f;
 		forward = forward.normalized;
 
-		// Always rotates the player according to the camera horizontal rotation in aim mode.
+
 		Quaternion targetRotation = Quaternion.Euler(0, cameraObject.GetComponent<CameraFollow>().GetH, 0);
 
 		float minSpeed = Quaternion.Angle(transform.rotation, targetRotation) * aimTurnSmoothing;
 
-		// Rotate entire player to face camera.
+		
 		SetLastDirection(forward);
 		transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, minSpeed * Time.deltaTime);
 
@@ -155,7 +160,7 @@ public class ZoomAim : Character
 		lastDirection = direction;
 	}
 
-	// Draw the crosshair when aiming.
+	// 조준점 그리기
 	void OnGUI()
 	{
 		if (crosshair)

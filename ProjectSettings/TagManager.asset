@@ -13,6 +13,7 @@ TagManager:
   - ITEM
   - PATROL
   - GUN
+  - Gate
   layers:
   - Default
   - TransparentFX

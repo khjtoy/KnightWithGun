@@ -14,18 +14,39 @@ public class OpaqueItem : MonoBehaviour, Item
     private Material[] normalMaterial = new Material[2];
     [SerializeField]
     private float timer;
+
+    private PlayerStats playerStats;
+
+    private Animator playerAni;
+
     public bool isOpaque { get; set; } = false;
+
+    private int hashDrink = Animator.StringToHash("Drinking");
+
+    private bool isPlaying = false;
+
+    private void Start()
+    {
+        playerStats = GameObject.FindWithTag("PLAYER").GetComponent<PlayerStats>();
+        playerAni = GameObject.FindWithTag("PLAYER").GetComponent<Animator>();
+    }
+
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Z))
+        if(Input.GetKeyDown(KeyCode.Alpha3) && playerStats.HideCount > 0 && !isPlaying)
         {
-            ItemAction();
-            Invoke("Kill", timer);
+            isPlaying = true;
+            playerStats.HideCount--;
+            playerStats.ChangeItemUI();
+            playerAni.SetTrigger(hashDrink);
+            Invoke("ItemAction", 4);
+            //ItemAction();
         }
     }
 
     public void ItemAction()
     {
+        Invoke("Kill", timer);
         opaqueObject[0].material = opaqueMaterial[0];
         opaqueObject[1].material = opaqueMaterial[0];
         opaqueObject[2].material = opaqueMaterial[1];
@@ -38,5 +59,6 @@ public class OpaqueItem : MonoBehaviour, Item
         opaqueObject[1].material = normalMaterial[0];
         opaqueObject[2].material = normalMaterial[1];
         isOpaque = false;
+        isPlaying = false;
     }
 }

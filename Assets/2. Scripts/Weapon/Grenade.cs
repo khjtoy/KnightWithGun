@@ -27,7 +27,14 @@ public class Grenade : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         // ÀÌÆåÆ® »ý¼º
-        Instantiate(explosionPrefab, transform.position, transform.rotation);
+        ParticleSystem particleSystem = Instantiate(explosionPrefab, transform.position, transform.rotation).GetComponent<ParticleSystem>();
+
+        if(collision.collider.CompareTag("Gate"))
+        {
+            particleSystem.Emit(100);
+            collision.transform.parent.gameObject.SetActive(false);
+            collision.transform.parent.parent.GetChild(1).gameObject.SetActive(true);
+        }
 
         Destroy(gameObject);
     }

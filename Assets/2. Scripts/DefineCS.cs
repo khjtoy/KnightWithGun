@@ -8,6 +8,9 @@ public static class DefineCS
     {
         BULLET,
         THORNS,
-        SPIDER
+        SPIDER,
+        HP_BOTTLE,
+        WATER_BOTTLE,
+        HIDE_BOTTLE
     }
 }

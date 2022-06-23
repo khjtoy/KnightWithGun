@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using DG.Tweening;
 
 public class RayCastWeapon : MonoBehaviour
@@ -18,6 +19,9 @@ public class RayCastWeapon : MonoBehaviour
     public Vector3 recoilKickback;
     public float recoilAmount;
 
+    [SerializeField]
+    private Animator playerAni;
+
 
     Ray ray;
     RaycastHit hitInfo;
@@ -28,9 +32,30 @@ public class RayCastWeapon : MonoBehaviour
     [SerializeField]
     private Recoil recoil;
 
+    // 총알 최대 개수
+    [SerializeField]
+    private int maxBullet = 50;
+
+    // 남은 총알 개수
+    private int currentBullet;
+
+    [SerializeField]
+    private Text bulletText;
+
+    private void Start()
+    {
+        EventManager.StartListening("BULLET_RELOAD", Reloading);
+        EventManager.StartListening("MAX", SetMaxBullet);
+        SetMaxBullet(new EventParam());
+    }
+
     public void StartFiring()
     {
+        if (currentBullet <= 0) return;
+
         isFiring = true;
+        currentBullet--;
+        bulletText.text = string.Format("{0}", currentBullet);
         FireBullet();
     }
 
@@ -70,6 +95,30 @@ public class RayCastWeapon : MonoBehaviour
             tracer.transform.position = hitInfo.point;
         }
 
+    }
+
+    private void Reloading(EventParam eventParam)
+    {
+        if (currentBullet == maxBullet) return;
+        playerAni.SetTrigger("Reload");
+    }
+
+    public void SetMaxBullet(EventParam eventParam)
+    {
+        currentBullet = maxBullet;
+        bulletText.text = string.Format("{0}", currentBullet);
+    }
+
+    private void OnDestroy()
+    {
+        EventManager.StopListening("BULLET_RELOAD", Reloading);
+        EventManager.StopListening("MAX", SetMaxBullet);
+    }
+
+    private void OnApplicationQuit()
+    {
+        EventManager.StopListening("BULLET_RELOAD", Reloading);
+        EventManager.StopListening("MAX", SetMaxBullet);
     }
 
     public void StopFiring()

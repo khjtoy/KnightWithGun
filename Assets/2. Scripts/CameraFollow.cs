@@ -147,7 +147,7 @@ public class CameraFollow : MonoBehaviour
 	{
 		Vector3 target = player.position + pivotOffset;
 		Vector3 direction = target - checkPos;
-		if (Physics.SphereCast(checkPos, 0.2f, direction, out RaycastHit hit, direction.magnitude))
+		if (Physics.SphereCast(checkPos, 0.1f, direction, out RaycastHit hit, direction.magnitude))
 		{
 			if (hit.transform != player && !hit.transform.GetComponent<Collider>().isTrigger)
 			{
