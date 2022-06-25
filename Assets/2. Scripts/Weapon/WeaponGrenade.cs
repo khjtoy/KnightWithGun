@@ -18,6 +18,7 @@ public class WeaponGrenade : MonoBehaviour, Item
     private void Start()
     {
         playerWeapon = transform.parent.GetComponent<PlayerWeapon>();
+        EventManager.StartListening("ShootGrenada", SpawnGrenadeProjectile);
     }
     private void Update()
     {
@@ -27,7 +28,7 @@ public class WeaponGrenade : MonoBehaviour, Item
     {
         if(Input.GetMouseButtonDown(0) && !transform.parent.GetComponent<ZoomAim>().isAim() && playerWeapon.weaponIndex == 1)
         {
-            SpawnGrenadeProjectile();
+            animator.SetTrigger("Bomb");
         }
         //StartCoroutine("OnAttack");
     }
@@ -38,11 +39,20 @@ public class WeaponGrenade : MonoBehaviour, Item
     }
 
 
-    public void SpawnGrenadeProjectile()
+    public void SpawnGrenadeProjectile(EventParam eventParam)
     {
         GameObject grenadeClone = Instantiate(grenadePrefab, grenadeSpawnPoint.position, Random.rotation);
         grenadeClone.GetComponent<Grenade>().Setup(10, transform.parent.forward);
-        animator.SetTrigger("Bomb");
+    }
+
+    private void OnDestroy()
+    {
+        EventManager.StopListening("ShootGrenada", SpawnGrenadeProjectile);
+    }
+
+    private void OnApplicationQuit()
+    {
+        EventManager.StopListening("ShootGrenada", SpawnGrenadeProjectile);
     }
 
     private void OnEnable()

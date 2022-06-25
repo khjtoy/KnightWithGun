@@ -147,6 +147,11 @@ public class PlayerStats : Character
         }
     }
 
+    public void ShootGrenada()
+    {
+        EventManager.TriggerEvent("ShootGrenada", damageParam);
+    }
+
     private void Damage(EventParam eventParam)
     {
         currentHP -= eventParam.intParam;

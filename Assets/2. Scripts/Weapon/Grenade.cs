@@ -31,7 +31,7 @@ public class Grenade : MonoBehaviour
 
         if(collision.collider.CompareTag("Gate"))
         {
-            particleSystem.Emit(100);
+            particleSystem.Emit(1000);
             collision.transform.parent.gameObject.SetActive(false);
             collision.transform.parent.parent.GetChild(1).gameObject.SetActive(true);
         }

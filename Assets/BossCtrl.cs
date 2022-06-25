@@ -11,6 +11,7 @@ public class BossCtrl : MonoBehaviour
         IDLE,
         TRACE,
         ATTACK,
+        ROTATION,
         RUN_ATTACK,
         DIE
     }
@@ -48,7 +49,6 @@ public class BossCtrl : MonoBehaviour
     private float setTime = 2f;
     private bool isChange = false;
     private bool isAttack = false;
-    public bool isRot = false;
 
     private Rigidbody rigidbody;
 
@@ -56,6 +56,17 @@ public class BossCtrl : MonoBehaviour
     private ParticleSystem slashParticle;
 
     Quaternion TargetRot;
+
+    // 시야각
+    [SerializeField]
+    private float viewAngle;
+    [SerializeField]
+    private float viewDistance;
+    Vector3 targetDir = Vector3.zero;
+    float dotProduct;
+    float theta;
+
+    bool isRot = false;
     private void Awake()
     {
         Debug.Log("^^");
@@ -112,36 +123,41 @@ public class BossCtrl : MonoBehaviour
         }
 
 
-        if(!isRot)
-        {
-
             // 목적지까지 남은 거리로 회전 여부 판단
-            if (agent.remainingDistance >= 0.5f)
+            if (agent.remainingDistance >= 5f || isRot)
             {
-                // Vector3 l_vector = targetTransform.position - monsterTransform.position;
+                 Vector3 l_vector = targetTransform.position - monsterTransform.position;
 
                 // 회전 각도 산출
-                //Quaternion rotation = Quaternion.LookRotation(-l_vector);
+               Quaternion rotation = Quaternion.LookRotation(-l_vector);
 
                 // 에이전트의 회전 값
-                Vector3 direction = agent.desiredVelocity;
+                //Vector3 direction = agent.desiredVelocity;
 
                 // 회전 각도 산출
-                Quaternion rotation = Quaternion.LookRotation(-direction);
+                //Quaternion rotation = Quaternion.LookRotation(-direction);
 
                 // 구면 선형보간 함수로 부드러운 회전 처리
-                //monsterTransform.rotation = Quaternion.Slerp(monsterTransform.rotation, rotation, Time.deltaTime * 10.0f);
+                monsterTransform.rotation = Quaternion.Slerp(monsterTransform.rotation, rotation, Time.deltaTime * 10.0f);
             }
-        }
+
+        Vector3 leftBoundary = DirFromAngle(-viewAngle / 2);
+        Vector3 rightBoundary = DirFromAngle(viewAngle / 2);
+        Debug.DrawLine(transform.position, transform.position + leftBoundary * viewDistance, Color.blue);
+        Debug.DrawLine(transform.position, transform.position + rightBoundary * viewDistance, Color.blue);
+
+        targetDir = (targetTransform.position - monsterTransform.position).normalized;
+        dotProduct = Vector3.Dot(transform.forward.normalized, targetDir);
+        theta = Mathf.Acos(dotProduct) * Mathf.Rad2Deg;
+        theta = theta;
+
+}
+    public Vector3 DirFromAngle(float angleInDegrees)
+    {
+        angleInDegrees += monsterTransform.eulerAngles.y;
+        return new Vector3(Mathf.Sin(angleInDegrees * Mathf.Deg2Rad), 0, Mathf.Cos(angleInDegrees * Mathf.Deg2Rad));
     }
 
-    private void RotateToPlayer()
-    {
-        if (TargetRot == monsterTransform.rotation) return;
-        Vector3 l_vector = targetTransform.position - monsterTransform.position;
-        TargetRot = Quaternion.LookRotation(-l_vector).normalized;
-        isRot = true;
-    }
 
     private IEnumerator CheckMonsterState()
     {
@@ -162,7 +178,12 @@ public class BossCtrl : MonoBehaviour
 
                 if (distance <= attackDist)
                 {
-                    state = State.ATTACK;
+                    if (theta <= viewAngle / 2)
+                    {
+                        state = State.ATTACK;
+                    }
+                    else
+                        state = State.ROTATION;
                 }
                 else if (distance <= traceDist)
                 {
@@ -188,39 +209,39 @@ public class BossCtrl : MonoBehaviour
                 case State.IDLE:
                     // 추적 중지
                     agent.isStopped = true;
+                    isRot = false;
                     anim.SetBool(hashTrace, false);
                     //anim.SetBool(hashAttack, false);
                     break;
                 case State.TRACE:
                     // 추적 대상 좌표로 이동
+                    isRot = false;
                     agent.SetDestination(targetTransform.position);
                     agent.speed = 10f;
                     agent.isStopped = false;
                     anim.SetBool(hashTrace, true);
                     //anim.SetBool(hashAttack, false);
                     break;
+                case State.ROTATION:
+                    isRot = true;
+                    break;
                 case State.ATTACK:
                     if (!isAttack)
                     {
+                        isRot = false;
                         isAttack = true;
                         agent.isStopped = true;
-                        isRot = true;
-
-                        
-                        monsterTransform.DORotate(targetTransform.rotation.eulerAngles, 2f).OnComplete(() =>
-                        {
-                            isRot = false;
-                            slashParticle.gameObject.SetActive(true);
-                            anim.ResetTrigger(hashLAttack);
-                            int index = Random.Range(0, 2);
-                            anim.SetFloat(hashSDIndex, index);
-                            anim.SetTrigger(hashAttack);
-                        });
+                        slashParticle.gameObject.SetActive(true);
+                        anim.ResetTrigger(hashLAttack);
+                        int index = Random.Range(0, 2);
+                        anim.SetFloat(hashSDIndex, index);
+                        anim.SetTrigger(hashAttack);
                     }
                     break;
                 case State.RUN_ATTACK:
                     if(!isAttack)
                     {
+                        isRot = false;
                         isAttack = true;
                         agent.isStopped = true;
                         slashParticle.gameObject.SetActive(true);
@@ -232,6 +253,7 @@ public class BossCtrl : MonoBehaviour
                 case State.DIE:
                     isDie = true;
                     agent.isStopped = true;
+                    isRot = false;
                     anim.SetTrigger(hashDie);
                     rigidbody.isKinematic = false;
                     break;
