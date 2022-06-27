@@ -274,8 +274,8 @@ public class SpiderCtrl : Monster
         // wayPoint ÁöÁ¤
         GameObject wayPoint = GameObject.FindGameObjectWithTag("PATROL");
 
-        waypoints = new Transform[17];
-        for (int i = 0; i <= 16; i++)
+        waypoints = new Transform[20];
+        for (int i = 0; i < 20; i++)
         {
             waypoints[i] = wayPoint.transform.GetChild(i);
         }
@@ -297,7 +297,7 @@ public class SpiderCtrl : Monster
     {
         if (other.CompareTag("GUN"))
         {
-            MonsterHit(monsterTransform.position, monsterTransform.rotation.eulerAngles, 10);
+            MonsterHit(monsterTransform.position, monsterTransform.rotation.eulerAngles, 40);
         }
     }
 

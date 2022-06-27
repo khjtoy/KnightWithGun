@@ -23,6 +23,14 @@ public class ZoomAim : Character
 
 	private float time = 0.1f;
 
+
+	private void OnEnable()
+	{
+		if(aim)
+        {
+			StartCoroutine(ToggleAimOff());
+		}
+	}
 	void Start()
 	{
 		cameraObject = Camera.main.transform;
@@ -54,7 +62,7 @@ public class ZoomAim : Character
 		//canSprint = !aim;
 
 		// 카메라 조준 위치를 왼쪽 또는 오른쪽으로 전환
-		if (aim && Input.GetMouseButtonDown(2))
+		if (aim && Input.GetKeyDown(KeyCode.G))
 		{
 			aimCamOffset.x = aimCamOffset.x * (-1);
 			aimPivotOffset.x = aimPivotOffset.x * (-1);

@@ -20,6 +20,15 @@ public class PlayerWeapon : MonoBehaviour
     [SerializeField]
     private GameObject gun;
 
+    [SerializeField]
+    private RayCastWeapon rayCastWeapon;
+
+    [SerializeField]
+    private WeaponGrenade weaponGrenade;
+
+    [SerializeField]
+    private Text count;
+
     private EventParam eventParam;
 
     private void Start()
@@ -39,9 +48,16 @@ public class PlayerWeapon : MonoBehaviour
         weaponIndex++;
         if (weaponIndex >= 2) weaponIndex = 0;
 
-        if (weaponIndex == 0) gun.SetActive(true);
-        else gun.SetActive(false);
-
+        if (weaponIndex == 0)
+        {
+            gun.SetActive(true);
+            count.text = string.Format("{0}", rayCastWeapon.GetBullet());
+        }
+        else
+        {
+            gun.SetActive(false);
+            count.text = string.Format("{0}", weaponGrenade.Grenada);
+        }
         rect.anchoredPosition = new Vector3(265, 31, 0);
         rect.transform.GetChild(0).GetComponent<Image>().sprite = weaponImage[weaponIndex];
         rect.DOAnchorPosX(3, 1f);

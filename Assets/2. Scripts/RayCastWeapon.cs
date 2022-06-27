@@ -39,9 +39,10 @@ public class RayCastWeapon : MonoBehaviour
     // 남은 총알 개수
     private int currentBullet;
 
+    private bool reloding = false;
+
     [SerializeField]
     private Text bulletText;
-
     private void Start()
     {
         EventManager.StartListening("BULLET_RELOAD", Reloading);
@@ -49,10 +50,17 @@ public class RayCastWeapon : MonoBehaviour
         SetMaxBullet(new EventParam());
     }
 
+    public int GetBullet()
+    {
+        return currentBullet;
+    }
+
+
     public void StartFiring()
     {
-        if (currentBullet <= 0) return;
+        if (currentBullet <= 0 || reloding) return;
 
+        //playerAni.SetTrigger("Shoot");
         isFiring = true;
         currentBullet--;
         bulletText.text = string.Format("{0}", currentBullet);
@@ -85,6 +93,10 @@ public class RayCastWeapon : MonoBehaviour
                 Debug.Log("접근");
                 monster.MonsterHit(hitInfo.point, hitInfo.normal, 10);
             }
+            if(hitInfo.collider.CompareTag("XTARGET"))
+            {
+                hitInfo.collider.GetComponent<XTarget>().AddCount();
+            }
             Debug.DrawLine(ray.origin, hitInfo.point, Color.red, 1.0f);
 
             Debug.Log(hitInfo.collider.name);
@@ -101,12 +113,19 @@ public class RayCastWeapon : MonoBehaviour
     {
         if (currentBullet == maxBullet) return;
         playerAni.SetTrigger("Reload");
+        reloding = true;
     }
 
     public void SetMaxBullet(EventParam eventParam)
     {
         currentBullet = maxBullet;
         bulletText.text = string.Format("{0}", currentBullet);
+        reloding = false;
+    }
+
+    public bool GetReloding()
+    {
+        return reloding;
     }
 
     private void OnDestroy()

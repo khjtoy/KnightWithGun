@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class PlayerStats : Character
 {
@@ -57,6 +58,8 @@ public class PlayerStats : Character
     private bool changeThirst = false;
     //private bool tChangeClear = false;
     EventParam damageParam;
+    EventParam bossParam;
+    EventParam dogParam;
 
     [Header("Bottle")]
     [SerializeField]
@@ -72,6 +75,9 @@ public class PlayerStats : Character
 
     private int thirstValue = 40;
     private int count = 2;
+
+    [SerializeField]
+    private Transform cameraShake;
     public int HpCount
     {
         get
@@ -113,7 +119,9 @@ public class PlayerStats : Character
     private void Start()
     {
         EventManager.StartListening("PLAYER_DAMAGE", Damage);
-        damageParam.intParam = 10;    
+        damageParam.intParam = 10;
+        dogParam.intParam = 15;
+        bossParam.intParam = 30;
     }
 
 
@@ -155,6 +163,7 @@ public class PlayerStats : Character
     private void Damage(EventParam eventParam)
     {
         currentHP -= eventParam.intParam;
+        cameraShake.DOShakePosition(0.3f, 4);
         damageText.text = string.Format("{0}",currentHP);
         damageImage.color = flashColor;
         ChangeClear = true;
@@ -172,6 +181,19 @@ public class PlayerStats : Character
         {
             Damage(damageParam);
         }
+
+        if(other.CompareTag("BOSSATTACK"))
+        {
+            Damage(bossParam);
+            other.enabled = false;
+        }
+
+        if(other.CompareTag("DOGATTACK"))
+        {
+            Damage(dogParam);
+            other.enabled = false;
+        }
+
         if(other.CompareTag("ITEM"))
         {
             GetItem getItem = other.GetComponent<GetItem>();

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class WeaponGrenade : MonoBehaviour, Item
 {
@@ -15,6 +16,11 @@ public class WeaponGrenade : MonoBehaviour, Item
     private PlayerWeapon playerWeapon;
 
 
+    public int Grenada { get; private set; } = 10;
+
+    [SerializeField]
+    private Text countText;
+
     private void Start()
     {
         playerWeapon = transform.parent.GetComponent<PlayerWeapon>();
@@ -26,9 +32,12 @@ public class WeaponGrenade : MonoBehaviour, Item
     }
     public void ItemAction()
     {
+        if (Grenada <= 0) return;
         if(Input.GetMouseButtonDown(0) && !transform.parent.GetComponent<ZoomAim>().isAim() && playerWeapon.weaponIndex == 1)
         {
             animator.SetTrigger("Bomb");
+            Grenada--;
+            countText.text = string.Format("{0}", Grenada);
         }
         //StartCoroutine("OnAttack");
     }

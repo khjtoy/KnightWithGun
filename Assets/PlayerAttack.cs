@@ -18,6 +18,9 @@ public class PlayerAttack : Character
     [SerializeField]
     private float delay;
 
+    [SerializeField]
+    private RayCastWeapon rayCastWeapon;
+
     private float timer;
     public bool IsAttack
     {
@@ -37,7 +40,7 @@ public class PlayerAttack : Character
 
         if (timer <= 0)
         {
-            if (Input.GetMouseButtonDown(0) && !GetComponent<ZoomAim>().isAim())
+            if (Input.GetMouseButtonDown(0) && !GetComponent<ZoomAim>().isAim() && !rayCastWeapon.GetReloding())
             {
                 ani.SetTrigger(m_HashMeelAttack);
                 atkParicle.SetActive(true);

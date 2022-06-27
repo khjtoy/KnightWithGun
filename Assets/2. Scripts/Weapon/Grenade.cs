@@ -36,6 +36,12 @@ public class Grenade : MonoBehaviour
             collision.transform.parent.parent.GetChild(1).gameObject.SetActive(true);
         }
 
+        if(collision.collider.CompareTag("BossGate"))
+        {
+            particleSystem.Emit(1000);
+            collision.transform.parent.gameObject.SetActive(false);
+            collision.transform.parent.parent.GetChild(1).gameObject.SetActive(true);
+        }
         Destroy(gameObject);
     }
 }

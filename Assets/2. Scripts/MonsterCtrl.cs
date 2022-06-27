@@ -195,7 +195,7 @@ public class MonsterCtrl : Monster
     {
         if (other.CompareTag("GUN"))
         {
-            MonsterHit(monsterTransform.position, monsterTransform.rotation.eulerAngles, 7);
+            MonsterHit(monsterTransform.position, monsterTransform.rotation.eulerAngles, 40);
         }
     }
 
@@ -245,6 +245,18 @@ public class MonsterCtrl : Monster
         if (currHp <= 0)
         {
             state = State.DIE;
+
+
+            GetComponent<CapsuleCollider>().enabled = false;
+
+            int random = Random.Range(0, 2);
+
+            if(random == 0)
+            {
+                GameObject bottle = ObjectPoolMgr.Instance.GetPooledObject((int)PooledIndex.WATER_BOTTLE);
+                bottle.transform.position = transform.localPosition;
+                bottle.SetActive(true);
+            }
         }
     }
 }

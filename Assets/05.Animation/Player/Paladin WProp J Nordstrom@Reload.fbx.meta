@@ -59,7 +59,7 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.91013616
+      - time: 1
         functionName: MaxBullet
         data: 
         objectReferenceParameter: {fileID: 11500000, guid: c03cc9a3a98aab04db840f7cd06590f7,

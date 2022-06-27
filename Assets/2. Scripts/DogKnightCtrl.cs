@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using DG.Tweening;
 
-public class DogKnightCtrl : MonoBehaviour
+public class DogKnightCtrl : Monster
 {
     //몬스터 상태정보
 
@@ -40,7 +40,7 @@ public class DogKnightCtrl : MonoBehaviour
     private readonly int hashDie = Animator.StringToHash("DIE");
 
     // 몬스터의 생명 초기값
-    private readonly int iniHp = 100;
+    private readonly int iniHp = 500;
     private int currHp;
 
     [SerializeField]
@@ -49,9 +49,15 @@ public class DogKnightCtrl : MonoBehaviour
     [SerializeField]
     private GameObject meleeEffect;
 
+    [SerializeField]
+    private HealthBarUI healthBarUI;
+
     EventParam eventParam;
 
     private bool isComback = false;
+
+    [SerializeField]
+    private BoxCollider attackColider;
 
     // Score 연결
     private void Awake()
@@ -242,5 +248,36 @@ public class DogKnightCtrl : MonoBehaviour
     private void OnApplicationQuit()
     {
         EventManager.StopListening("COMBACK", ChangeComback);
+    }
+
+    public void OnAttackCoilder()
+    {
+        attackColider.enabled = true;
+    }
+
+    public void OffAttackColider()
+    {
+        attackColider.enabled = false;
+    }
+
+    public override void MonsterHit(Vector3 bloodPos, Vector3 bloodRot, int damage)
+    {
+        if (currHp > 0)
+        {
+            // 피격 애니메이션 실행
+            anim.SetTrigger(hashHit);
+
+            // 몬스터 HP 차감
+            currHp -= damage;
+            healthBarUI.ChangeHP(currHp, iniHp);
+
+            if (currHp <= 0)
+            {
+                anim.SetBool(hashDie, true);
+                anim.SetBool(hashTrace, false);
+                anim.SetBool(hashAttack, false);
+                state = State.DIE;
+            }
+        }
     }
 }

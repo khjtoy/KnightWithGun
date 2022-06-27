@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
 
     private void SpawnSpider()
     {
-        for(int i = 0; i < 50; i++)
+        for(int i = 0; i < 100; i++)
         {
             GameObject spider = ObjectPoolMgr.Instance.GetPooledObject((int)PooledIndex.SPIDER);
             spider.GetComponent<SpiderCtrl>().RandomPos();
