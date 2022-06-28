@@ -2,8 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using DG.Tweening;
 using UnityEngine.Playables;
+using DG.Tweening;
+using UnityEngine.SceneManagement;
 
 public class GameCutScene : MonoBehaviour
 {
@@ -30,6 +31,11 @@ public class GameCutScene : MonoBehaviour
     private BossCtrl useBossCtrl;
     //private Camera
 
+    [SerializeField]
+    private Image panel;
+    [SerializeField]
+    private Text panelText;
+
     private void Start()
     {
         mainCamera = Camera.main.transform;
@@ -42,8 +48,21 @@ public class GameCutScene : MonoBehaviour
             OnBoss = false;
             OffBossCutScene();
             useBossCtrl.ChangeDie();
+            panel.DOFade(1, 0.5f).OnComplete(() =>
+            {
+                panelText.DOText("MISSION COMPLETE!!", 2f).OnComplete(() =>
+                {
+                    Invoke("LoadMenu", 2f);
+                });
+            });
         }
     }
+    
+    private void LoadMenu()
+    {
+        SceneManager.LoadScene(0);
+    }
+
     public void OnBossCutScene(BossCtrl bossCtrl)
     {
         useBossCtrl = bossCtrl;

@@ -11,6 +11,7 @@ public static class DefineCS
         SPIDER,
         HP_BOTTLE,
         WATER_BOTTLE,
-        HIDE_BOTTLE
+        HIDE_BOTTLE,
+        EXPLOSION
     }
 }

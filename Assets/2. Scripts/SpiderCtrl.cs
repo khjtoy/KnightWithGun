@@ -46,6 +46,7 @@ public class SpiderCtrl : Monster
     [SerializeField]
     private Transform[] waypoints;
     public int waypointIndex;
+    [SerializeField]
     private Vector3 target;
 
     // ½Ã¾ß°¢
@@ -73,6 +74,7 @@ public class SpiderCtrl : Monster
 
     // Ç÷Èç È¿°ú ÇÁ¸®ÆÕ
     private GameObject bloodEffect;
+
     private void Awake()
     {
         Debug.Log("^^");
@@ -274,14 +276,17 @@ public class SpiderCtrl : Monster
         // wayPoint ÁöÁ¤
         GameObject wayPoint = GameObject.FindGameObjectWithTag("PATROL");
 
-        waypoints = new Transform[20];
-        for (int i = 0; i < 20; i++)
+        waypoints = new Transform[16];
+        for (int i = 0; i < 16; i++)
         {
             waypoints[i] = wayPoint.transform.GetChild(i);
         }
 
         int range = Random.Range(0, waypoints.Length);
         transform.position = waypoints[range].position;
+
+        range = Random.Range(0, waypoints.Length);
+        target = waypoints[range].position;
     }
 
     void IterateWaypointIndex()
@@ -376,11 +381,13 @@ public class SpiderCtrl : Monster
             currHp -= damage;
             healthBarUI.ChangeHP(currHp, iniHp);
 
-            // ÃÑ¾ËÀÇ ÃæÁ¹ ÁöÁ¡ÀÇ ¹ý¼± º¤ÅÍ
-            Quaternion rot = Quaternion.LookRotation(bloodRot);
-            // Ç÷Èç È¿°ú »ý»ó
-            ShowBloodEffect(bloodPos, rot);
-
+            if (bloodPos != new Vector3(100, -100, 100))
+            {
+                // ÃÑ¾ËÀÇ ÃæÁ¹ ÁöÁ¡ÀÇ ¹ý¼± º¤ÅÍ
+                Quaternion rot = Quaternion.LookRotation(bloodRot);
+                // Ç÷Èç È¿°ú »ý»ó
+                ShowBloodEffect(bloodPos, rot);
+            }
             if(floatingTextPrefab)
             {
                 ShowFloatingText();
@@ -399,7 +406,15 @@ public class SpiderCtrl : Monster
 
     private void ShowFloatingText()
     {
-        var go = Instantiate(floatingTextPrefab, transform.position, Quaternion.identity, transform);
+        Vector3 l_vector = targetTransform.position - transform.position;
+        Quaternion temp = Quaternion.LookRotation(-l_vector).normalized;
+        var go = Instantiate(floatingTextPrefab, transform.position, temp, transform);
+
+        //go.transform.LookAt(targetTransform);
+
+
+        //go.transform.rotation = Quaternion.Euler(go.transform.rotation.x, -go.transform.rotation.y, go.transform.rotation.z);
+
         go.GetComponent<TextMeshPro>().text = currHp.ToString();
     }
 }

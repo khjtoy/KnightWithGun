@@ -30,6 +30,13 @@ public class WeaponGrenade : MonoBehaviour, Item
     {
         ItemAction();
     }
+
+    public void AddGrenada()
+    {
+        Grenada++;
+        if(playerWeapon.weaponIndex == 1)
+            countText.text = string.Format("{0}", Grenada);
+    }
     public void ItemAction()
     {
         if (Grenada <= 0) return;

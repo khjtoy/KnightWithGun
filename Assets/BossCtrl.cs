@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 public class BossCtrl : Monster
 {
@@ -88,6 +89,8 @@ public class BossCtrl : Monster
     private SpriteRenderer xTarget;
 
     private int oldIndex = -1;
+
+
     private void Awake()
     {
         Debug.Log("^^");

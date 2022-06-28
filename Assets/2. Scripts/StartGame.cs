@@ -18,9 +18,15 @@ public class StartGame : MonoBehaviour
     [SerializeField]
     private Text[] titleText = new Text[2];
 
+    private void Start()
+    {
+        
+        //PlayerPrefs.SetInt("END", 0);
+    }
+
     private void Update()
     {
-        if((cutscene.state != PlayState.Playing) && isEnd == false)
+        if((cutscene.state != PlayState.Playing) && isEnd == false || PlayerPrefs.GetInt("END", 0) == 1)
         {
             isEnd = true;
             ShowTitle();

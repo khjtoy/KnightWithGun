@@ -43,8 +43,12 @@ public class RayCastWeapon : MonoBehaviour
 
     [SerializeField]
     private Text bulletText;
+
+    [SerializeField]
+    private AudioSource shotAudio;
     private void Start()
     {
+        shotAudio = GetComponent<AudioSource>();
         EventManager.StartListening("BULLET_RELOAD", Reloading);
         EventManager.StartListening("MAX", SetMaxBullet);
         SetMaxBullet(new EventParam());
@@ -61,6 +65,7 @@ public class RayCastWeapon : MonoBehaviour
         if (currentBullet <= 0 || reloding) return;
 
         //playerAni.SetTrigger("Shoot");
+        shotAudio.Play();
         isFiring = true;
         currentBullet--;
         bulletText.text = string.Format("{0}", currentBullet);

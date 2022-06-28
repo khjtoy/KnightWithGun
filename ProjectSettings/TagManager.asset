@@ -18,6 +18,7 @@ TagManager:
   - XTARGET
   - DOGATTACK
   - BossGate
+  - PICKUPGRENADE
   layers:
   - Default
   - TransparentFX

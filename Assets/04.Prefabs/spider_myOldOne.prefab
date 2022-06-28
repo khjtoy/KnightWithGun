@@ -1615,6 +1615,7 @@ MonoBehaviour:
   isDie: 0
   waypoints: []
   waypointIndex: 0
+  target: {x: 0, y: 0, z: 0}
   viewAngle: 60
   viewDistance: 0.5
   healthBarUI: {fileID: 217475200285261400}
@@ -1622,6 +1623,7 @@ MonoBehaviour:
   damageCol: {fileID: 217475200076010418}
   floatingTextPrefab: {fileID: 7678225915738540093, guid: 4edfb1f346d0d3b46a664e8ee65ff3cc,
     type: 3}
+  floatingPos: {fileID: 0}
 --- !u!54 &217475199371125650
 Rigidbody:
   m_ObjectHideFlags: 0
