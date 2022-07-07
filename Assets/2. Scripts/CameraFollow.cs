@@ -13,6 +13,9 @@ public class CameraFollow : MonoBehaviour
 	public float maxVerticalAngle = 30f;                               // 수직 최대 각도
 	public float minVerticalAngle = -60f;                              // 수직 최소 각도
 
+	public float zoomMaxVerAngle;									   //Zoom 할 시 최대 각도
+	public float zoomMinVerAngle;                                      //Zoom 할 시 최소 각도
+
 	private float angleH = 0;                                          // 마우스 이동을 통한 수평 각도
 	private float angleV = 0;                                          // 마우스 이동을 통한 수직 각도
 	private Transform cam;                                             // 해당 스크립트의 Transform
@@ -26,6 +29,8 @@ public class CameraFollow : MonoBehaviour
 	private bool isCustomOffset;                                       // 사용자 지정 카메라 오프셋 사용 여부
 	[SerializeField]
 	private Transform cameraRot; // 카메라 회전을 할 Transform;
+	[SerializeField]
+	private ZoomAim zoomAim;
 
 	// 카메라 수평 각도 프로퍼티
 	public float GetH { get { return angleH; } }
@@ -52,13 +57,17 @@ public class CameraFollow : MonoBehaviour
 				"It is recommended to set all vertical offset in Pivot Offset.");
 	}
 
-	void Update()
+
+    void Update()
 	{
 		angleH += Mathf.Clamp(Input.GetAxis("Mouse X"), -1, 1) * horizontalAimingSpeed;
 		angleV += Mathf.Clamp(Input.GetAxis("Mouse Y"), -1, 1) * verticalAimingSpeed;
 
+		//if (zoomAim.isAim())
+			//angleV = Mathf.Clamp(angleV, zoomMinVerAngle, zoomMaxVerAngle);
+		//else
 		angleV = Mathf.Clamp(angleV, minVerticalAngle, targetMaxVerticalAngle);
-
+		
 		Quaternion camYRotation = Quaternion.Euler(0, angleH, 0);
 		Quaternion aimRotation = Quaternion.Euler(-angleV, angleH, 0);
 		cameraRot.rotation = aimRotation;

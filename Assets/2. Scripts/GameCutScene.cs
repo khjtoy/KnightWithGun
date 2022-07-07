@@ -12,6 +12,9 @@ public class GameCutScene : MonoBehaviour
     private PlayableDirector bossTimeline;
 
     [SerializeField]
+    private PlayableDirector startTimeline;
+
+    [SerializeField]
     private List<GameObject> bossOn;
 
     [SerializeField]
@@ -39,6 +42,7 @@ public class GameCutScene : MonoBehaviour
     private void Start()
     {
         mainCamera = Camera.main.transform;
+        OnStartCutScene();
     }
 
     private void Update()
@@ -55,6 +59,11 @@ public class GameCutScene : MonoBehaviour
                     Invoke("LoadMenu", 2f);
                 });
             });
+        }
+
+        if(startTimeline.state != PlayState.Playing)
+        {
+            OffStartCutScene();
         }
     }
     
@@ -109,5 +118,23 @@ public class GameCutScene : MonoBehaviour
         {
             FadeImage.DOFade(0, 1f);
         });
+    }
+
+    private void OffStartCutScene()
+    {
+        for (int i = 0; i < offPlayerScript.Count; i++)
+        {
+            offPlayerScript[i].enabled = true;
+        }
+    }
+
+    private void OnStartCutScene()
+    {
+        for (int i = 0; i < offPlayerScript.Count; i++)
+        {
+            offPlayerScript[i].enabled = false;
+        }
+        mainCamera.transform.localPosition = new Vector3(0, 0, 0);
+        startTimeline.Play();
     }
 }
