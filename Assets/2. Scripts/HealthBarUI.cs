@@ -12,7 +12,7 @@ public class HealthBarUI : MonoBehaviour
         if (!helathBar.transform.parent.gameObject.activeSelf && hp > 0)
             helathBar.transform.parent.gameObject.SetActive(true);
 
-        Debug.Log((float)hp / maxHp);
+        //Debug.Log((float)hp / maxHp);
         helathBar.fillAmount = (float)hp / maxHp;
     }
 }

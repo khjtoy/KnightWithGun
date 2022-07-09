@@ -31,6 +31,8 @@ public class GameCutScene : MonoBehaviour
 
     private bool OnBoss = false;
 
+    private bool OnCheck = false;
+
     private BossCtrl useBossCtrl;
     //private Camera
 
@@ -47,6 +49,7 @@ public class GameCutScene : MonoBehaviour
 
     private void Update()
     {
+        Debug.Log(bossTimeline.state);
         if ((bossTimeline.state != PlayState.Playing) && OnBoss)
         {
             OnBoss = false;
@@ -61,8 +64,9 @@ public class GameCutScene : MonoBehaviour
             });
         }
 
-        if(startTimeline.state != PlayState.Playing)
+        if(startTimeline.state != PlayState.Playing && !OnCheck)
         {
+            OnCheck = true;
             OffStartCutScene();
         }
     }
@@ -92,8 +96,8 @@ public class GameCutScene : MonoBehaviour
         FadeImage.DOFade(1, 0f).OnComplete(() =>
         {
             FadeImage.DOFade(0, 1f);
-            OnBoss = true;
             bossTimeline.Play();
+            OnBoss = true;
         });
 
     }

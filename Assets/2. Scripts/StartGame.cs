@@ -29,6 +29,7 @@ public class StartGame : MonoBehaviour
         if((cutscene.state != PlayState.Playing) && isEnd == false || PlayerPrefs.GetInt("END", 0) == 1)
         {
             isEnd = true;
+            PlayerPrefs.SetInt("END", 1);
             ShowTitle();
             EndCutScene();
         }
