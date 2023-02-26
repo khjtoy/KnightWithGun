@@ -6,9 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Modular Castle/DemoScene/castleDemo.unity
+    path: Assets/_Game/01.Scenes/Intro/Intro.unity
     guid: 0f30b31df1c21274da0aa193ec9e46e6
   - enabled: 1
-    path: Assets/InGame.unity
+    path: Assets/_Game/01.Scenes/InGame.unity
     guid: 6c9792811fb08fb4882e17eb56f4bb8c
   m_configObjects: {}
