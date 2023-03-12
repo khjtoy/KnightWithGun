@@ -7,6 +7,43 @@ using UnityEngine.UI;
 
 public class BossCtrl : Monster
 {
+    // 컴포넌트 캐싱
+    private Transform monsterTransform;
+    private Transform targetTransform;
+    private NavMeshAgent agent;
+    private Animator anim;
+
+    public Transform MonsterTransform => monsterTransform;
+    public Transform TargetTransform => targetTransform;
+    public NavMeshAgent Agent => agent;
+    public Animator Anim => anim;
+
+    // 추적 사정거리
+    [SerializeField]
+    private float traceDist = 10.0f;
+    [SerializeField]
+    //긴 공격 사정거리
+    private float longDist = 20.0f;
+    [SerializeField]
+    // 공격 사정거리
+    private float attackDist = 2.0f;
+
+    public float TraceDist => traceDist;
+    public float LongDist => longDist;
+    public float AttackDist => attackDist;
+
+
+    // 시야각
+    [SerializeField]
+    private float viewAngle;
+    [SerializeField]
+    private float viewDistance;
+    private float theta;
+
+    public float ViewAngle => viewAngle;
+    public float ViewDistance => viewDistance;
+    public float Theta => theta;
+
     public enum State
     {
         IDLE,
@@ -19,20 +56,8 @@ public class BossCtrl : Monster
 
     // 몬스터의 현재 상태
     public State state = State.IDLE;
-    // 추적 사정거리
-    public float traceDist = 10.0f;
-    //긴 공격 사정거리
-    public float longDist = 20.0f;
-    // 공격 사정거리
-    public float attackDist = 2.0f;
     // 몬스터 사망 여부
     public bool isDie = false;
-
-    // 컴포넌트 캐싱
-    private Transform monsterTransform;
-    private Transform targetTransform;
-    private NavMeshAgent agent;
-    private Animator anim;
 
     // 해시 테이블 값 가져오기
     private readonly int hashTrace = Animator.StringToHash("IsTrace");
@@ -71,14 +96,8 @@ public class BossCtrl : Monster
 
     Quaternion TargetRot;
 
-    // 시야각
-    [SerializeField]
-    private float viewAngle;
-    [SerializeField]
-    private float viewDistance;
     Vector3 targetDir = Vector3.zero;
     float dotProduct;
-    float theta;
     State oldState;
     public bool isRot = false;
 

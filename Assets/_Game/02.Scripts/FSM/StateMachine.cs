@@ -14,4 +14,14 @@ public class StateMachine
 
         currentState.Enter();
     }
+
+    public void Update()
+    {
+        currentState?.Update();
+    }
+
+    public void OnTriggerEnter(Collider other)
+    {
+        currentState?.OnTriggerEnter(other);
+    }
 }

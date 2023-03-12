@@ -84,6 +84,9 @@ public class PlayerStats : Character
     private Image panel;
 
     private bool isDied = false;
+
+    private bool isDamaged = false;
+    private float damagedTimer;
     public int HpCount
     {
         get
@@ -170,6 +173,17 @@ public class PlayerStats : Character
         {
             changeThirst = false;
         }
+
+        if(isDamaged)
+        {
+            damagedTimer += Time.deltaTime;
+
+            if(damagedTimer >= 0.3f)
+            {
+                damagedTimer = 0;
+                isDamaged = false;
+            }
+        }
     }
 
     public void ShootGrenada()
@@ -208,7 +222,11 @@ public class PlayerStats : Character
     {
         if(other.CompareTag("ATTACK"))
         {
-            Damage(damageParam);
+            if (!isDamaged)
+            {
+                Damage(damageParam);
+                isDamaged = true;
+            }
         }
 
         if(other.CompareTag("BOSSATTACK"))
